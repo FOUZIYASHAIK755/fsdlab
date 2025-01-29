@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #weather-info {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weather Information</h1>
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div id="weather-info"></div>
+
+    <script>
+        async function getWeather() {
+            try {
+                let rawData = await fetch("https://api.openweathermap.org/data/2.5/weather?q=London,uk&APPID=2fbe41478fed1617ec5d47831611e417");
+                let data = await rawData.json();
+
+                let { country } = data.sys;
+                let { name } = data;
+                let { temp_min, temp_max, humidity } = data.main;
+                document.getElementById('weather-info').innerHTML = `
+                    <p><strong>Country:</strong> ${country}</p>
+                    <p><strong>Location:</strong> ${name}</p>
+                    <p><strong>Minimum Temperature:</strong> ${temp_min}°C</p>
+                    <p><strong>Maximum Temperature:</strong> ${temp_max}°C</p>
+                    <p><strong>Humidity:</strong> ${humidity}%</p>
+                `;
+            } 
+        
+            catch (error) {
+                document.getElementById('weather-info').innerHTML = `
+                    <p>Error fetching data: ${error}</p>
+                `;
+            }
+        }
+        const chartData={
+        labels:['todays','temp_max'],
+        datasets:[
+            {
+                label: 'Temperature',
+                data: [temp,temp_max,temp_min],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                     ],
+                     }
+                     ]
+        }
+          function createchart(data) {
+    const ctx = document.getElementById('weatherChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'pie', 
+        data: data,
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: false // Start the Y-axis from a non-zero value
+                }
+            }
+        }
+    });
+}  
+    </script>
+</body>
+</html>
